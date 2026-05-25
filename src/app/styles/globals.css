@@ -20,6 +20,14 @@
   --radius-full: 9999px;
 
   --animate-menu-in: menu-in 140ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-thinking: thinking-shimmer 3.5s linear infinite;
+}
+
+@keyframes thinking-shimmer {
+  0%   { background-position: 100% center; } /* off-screen left, pause */
+  15%  { background-position: 100% center; }
+  70%  { background-position: 0% center; }   /* off-screen right, sweep done */
+  100% { background-position: 0% center; }   /* hold, then snap back */
 }
 
 @keyframes menu-in {

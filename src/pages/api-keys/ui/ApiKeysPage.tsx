@@ -1,5 +1,7 @@
 import { ApiKeyTable, ApiKeyCard, mockApiKeys } from '../../../entities/api-key'
 import { CreateApiKeyButton, CreateApiKeyFab } from '../../../features/api-key'
+import { ThinkingLoader } from '../../../shared/ui/ThinkingLoader'
+import { DotGridLoader } from '../../../shared/ui/DotGridLoader'
 
 export function ApiKeysPage() {
   return (
@@ -16,6 +18,10 @@ export function ApiKeysPage() {
           <CreateApiKeyButton />
         </div>
         <ApiKeyTable keys={mockApiKeys} />
+        <div className="flex items-center gap-4 pt-1">
+          <DotGridLoader color="#a855f7" />
+          <ThinkingLoader />
+        </div>
       </div>
 
       {/* ── Mobile view (<md) ── */}
@@ -23,6 +29,10 @@ export function ApiKeysPage() {
         {mockApiKeys.map((key) => (
           <ApiKeyCard key={key.id} apiKey={key} />
         ))}
+        <div className="flex items-center gap-3 pt-1">
+          <DotGridLoader color="#a855f7" />
+          <ThinkingLoader />
+        </div>
 
         {/* FAB */}
         <div className="sticky bottom-0 flex justify-end pt-2 pb-1">
