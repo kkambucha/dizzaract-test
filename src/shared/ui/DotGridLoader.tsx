@@ -5,20 +5,30 @@ const ROWS       = 3
 const STEP_MS    = 150
 const TOTAL_STEPS = 22
 
-// Peak step for each dot: diagonal sweep top-left → bottom-right
-// Row 0 col 0 peaks at step 5, row 2 col 5 peaks at step 12
-function peakAt(row: number, col: number): number {
-  return 5 + col + row
+// Horizontal wave: all rows in a column peak at the same step.
+// Middle row (1) has a wider peak zone (±1 step) than outer rows (exact step only).
+function colCenter(col: number): number {
+  return 6 + col
 }
 
 type Level = 'inactive' | 'low' | 'mid' | 'high' | 'peak'
 
 function getLevel(step: number, row: number, col: number): Level {
-  const diff = Math.abs(step - peakAt(row, col))
-  if (diff === 0) return 'peak'
-  if (diff === 1) return 'high'
-  if (diff === 2) return 'mid'
-  if (diff === 3) return 'low'
+  const diff = Math.abs(step - colCenter(col))
+
+  if (row === 1) {
+    // Middle row: 3-step peak
+    if (diff <= 1) return 'peak'
+    if (diff === 2) return 'high'
+    if (diff === 3) return 'mid'
+    if (diff === 4) return 'low'
+  } else {
+    // Top / bottom rows: 1-step peak
+    if (diff === 0) return 'peak'
+    if (diff === 1) return 'high'
+    if (diff === 2) return 'mid'
+    if (diff === 3) return 'low'
+  }
   return 'inactive'
 }
 
