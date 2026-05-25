@@ -13,7 +13,7 @@ import {
 export interface NavItem {
   id: string
   label: string
-  icon: ComponentType
+  icon: ComponentType<JSX.IntrinsicElements['svg']>
   active?: boolean
 }
 

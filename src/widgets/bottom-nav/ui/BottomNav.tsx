@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react'
-import { cn } from '@/shared/lib/cn'
+import cn from 'classnames'
 import {
   IconLayers,
   IconKey,
@@ -11,7 +11,7 @@ import {
 interface NavTab {
   id: string
   label: string
-  icon: ComponentType<{ className?: string }>
+  icon: ComponentType<JSX.IntrinsicElements['svg']>
   active?: boolean
   badge?: number
 }

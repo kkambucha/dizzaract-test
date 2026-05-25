@@ -1,4 +1,4 @@
-import { cn } from '@/shared/lib/cn'
+import cn from 'classnames'
 import type { NavItem } from '../model/navConfig'
 
 interface SidebarItemProps {
