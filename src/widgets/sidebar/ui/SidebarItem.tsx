@@ -3,23 +3,26 @@ import type { NavItem } from '../model/navConfig'
 
 interface SidebarItemProps {
   item: NavItem
+  collapsed?: boolean
   onClick?: (id: string) => void
 }
 
-export function SidebarItem({ item, onClick }: SidebarItemProps) {
+export function SidebarItem({ item, collapsed, onClick }: SidebarItemProps) {
   return (
     <li>
       <button
+        title={collapsed ? item.label : undefined}
         onClick={() => onClick?.(item.id)}
         className={cn(
-          'flex items-center gap-2 w-full h-9 px-2 rounded-xl text-sm text-[#fafafa] text-left truncate transition-colors cursor-pointer',
+          'flex items-center w-full h-9 rounded-xl text-sm text-[#fafafa] transition-colors cursor-pointer',
+          collapsed ? 'justify-center px-2' : 'gap-2 px-2 text-left',
           item.active ? 'bg-[#262626] font-medium' : 'font-normal hover:bg-[#262626]',
         )}
       >
         <span className="flex shrink-0 w-4 h-4 items-center justify-center">
           {item.icon}
         </span>
-        {item.label}
+        {!collapsed && <span className="truncate">{item.label}</span>}
       </button>
     </li>
   )
