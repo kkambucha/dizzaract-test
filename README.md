@@ -7,6 +7,8 @@ yarn install
 yarn dev
 ```
 
+Dev site will be available on `http://localhost:5173/`
+
 ---
 
 ## API Keys — backend requirements

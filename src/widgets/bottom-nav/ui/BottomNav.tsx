@@ -33,7 +33,7 @@ export function BottomNav() {
           <button
             key={tab.id}
             aria-current={tab.active ? 'page' : undefined}
-            className="flex flex-1 flex-col items-center justify-center gap-1 pt-2 pb-1 overflow-hidden cursor-pointer"
+            className="flex flex-1 flex-col items-center justify-center gap-1 pt-2 pb-3 overflow-hidden cursor-pointer"
           >
             {/* Icon container */}
             <div className="relative flex items-center justify-center w-12 h-8">
