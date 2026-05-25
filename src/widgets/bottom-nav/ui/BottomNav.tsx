@@ -29,7 +29,7 @@ export function BottomNav() {
       {tabs.map((tab) => (
         <button
           key={tab.id}
-          className="flex flex-1 flex-col items-center justify-center gap-1 pt-2 pb-1 overflow-hidden"
+          className="flex flex-1 flex-col items-center justify-center gap-1 pt-2 pb-1 overflow-hidden cursor-pointer"
         >
           {/* Icon container */}
           <div className="relative flex items-center justify-center w-12 h-8">

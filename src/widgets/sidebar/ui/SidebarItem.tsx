@@ -12,7 +12,7 @@ export function SidebarItem({ item, onClick }: SidebarItemProps) {
       <button
         onClick={() => onClick?.(item.id)}
         className={cn(
-          'flex items-center gap-2 w-full h-9 px-2 rounded-xl text-sm text-[#fafafa] text-left truncate transition-colors',
+          'flex items-center gap-2 w-full h-9 px-2 rounded-xl text-sm text-[#fafafa] text-left truncate transition-colors cursor-pointer',
           item.active ? 'bg-[#262626] font-medium' : 'font-normal hover:bg-[#262626]',
         )}
       >

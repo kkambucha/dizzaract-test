@@ -9,7 +9,7 @@ export function Header({ balance = '$145,20', userInitials = 'RG' }: HeaderProps
       <div className="w-[77px]" />
 
       <div className="flex items-center gap-2">
-        <button className="flex items-center justify-center h-9 px-3 bg-[#262626] hover:opacity-90 text-[#fafafa] text-xs font-medium rounded-xl whitespace-nowrap transition-opacity">
+        <button className="flex items-center justify-center h-9 px-3 bg-[#262626] hover:opacity-90 text-[#fafafa] text-xs font-medium rounded-xl whitespace-nowrap transition-opacity cursor-pointer">
           {balance}
         </button>
 

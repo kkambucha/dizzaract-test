@@ -1,6 +1,7 @@
 export { ApiKeyTable } from './ui/ApiKeyTable'
 export { ApiKeyRow } from './ui/ApiKeyRow'
 export { ApiKeyCard } from './ui/ApiKeyCard'
+export { ApiKeyActionsMenu } from './ui/ApiKeyActionsMenu'
 export { StatusBadge } from './ui/StatusBadge'
 export { mockApiKeys } from './model/mock'
 export { getMobileSummary } from './model/helpers'

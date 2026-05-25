@@ -1,3 +1,4 @@
+import logoUrl from '../../../assets/logo.svg'
 import { IconPanelLeft } from '../../../shared/ui/icons'
 import { SidebarGroup } from './SidebarGroup'
 import { navGroups } from '../model/navConfig'
@@ -12,14 +13,12 @@ export function Sidebar({ onToggle }: SidebarProps) {
       {/* Header */}
       <div className="flex items-center justify-between p-2 shrink-0">
         <div className="flex items-center px-2 py-1">
-          <span className="text-[#fafafa] text-[13px] font-bold tracking-widest">
-            FARLABS
-          </span>
+          <img src={logoUrl} alt="FARLABS" width={74} height={32} />
         </div>
         <button
           onClick={onToggle}
           aria-label="Toggle sidebar"
-          className="flex items-center justify-center w-8 h-8 rounded-xl text-[#fafafa] hover:bg-[#262626] transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-xl text-[#fafafa] hover:bg-[#262626] transition-colors cursor-pointer"
         >
           <IconPanelLeft />
         </button>

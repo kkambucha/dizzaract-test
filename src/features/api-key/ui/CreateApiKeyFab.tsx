@@ -9,7 +9,7 @@ export function CreateApiKeyFab({ onClick }: CreateApiKeyFabProps) {
     <button
       onClick={onClick}
       aria-label="Create API key"
-      className="flex items-center justify-center w-11 h-11 bg-[#5462fd] hover:opacity-90 rounded-xl transition-opacity shadow-lg"
+      className="flex items-center justify-center w-11 h-11 bg-[#5462fd] hover:opacity-90 rounded-xl transition-opacity shadow-lg cursor-pointer"
     >
       <IconPlus className="w-4 h-4 text-white" />
     </button>

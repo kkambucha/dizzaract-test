@@ -1,4 +1,4 @@
-import { IconEllipsisVertical } from '../../../shared/ui/icons'
+import { ApiKeyActionsMenu } from './ApiKeyActionsMenu'
 import { getMobileSummary } from '../model/helpers'
 import type { ApiKey } from '../model/types'
 
@@ -37,14 +37,9 @@ export function ApiKeyCard({ apiKey }: ApiKeyCardProps) {
         </span>
       )}
 
-      {/* Three-dot menu */}
+      {/* Actions menu */}
       <div className="flex items-center p-1 shrink-0">
-        <button
-          aria-label="More options"
-          className="flex items-center justify-center w-6 h-6 rounded text-[#a3a3a3] hover:text-[#fafafa] hover:bg-white/10 transition-colors"
-        >
-          <IconEllipsisVertical />
-        </button>
+        <ApiKeyActionsMenu align="right" />
       </div>
     </div>
   )

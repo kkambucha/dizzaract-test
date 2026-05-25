@@ -1,5 +1,5 @@
-import { IconEllipsisVertical } from '../../../shared/ui/icons'
 import { StatusBadge } from './StatusBadge'
+import { ApiKeyActionsMenu } from './ApiKeyActionsMenu'
 import type { ApiKey } from '../model/types'
 
 interface ApiKeyRowProps {
@@ -24,12 +24,7 @@ export function ApiKeyRow({ apiKey, isLast }: ApiKeyRowProps) {
       <div className={`${cellBase} ${border}`}>{apiKey.created}</div>
       <div className={`${cellBase} ${border}`}>{apiKey.lastUsed}</div>
       <div className={`flex shrink-0 w-[85px] h-[52px] items-center justify-end px-2 ${border}`}>
-        <button
-          aria-label="More options"
-          className="flex items-center justify-center w-6 h-6 rounded text-[#a3a3a3] hover:text-[#fafafa] hover:bg-[#262626] transition-colors"
-        >
-          <IconEllipsisVertical />
-        </button>
+        <ApiKeyActionsMenu align="right" />
       </div>
     </div>
   )
