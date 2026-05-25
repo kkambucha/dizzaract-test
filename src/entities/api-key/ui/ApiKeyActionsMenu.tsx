@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { IconEllipsisVertical } from '../../../shared/ui/icons'
 
 type MenuItemId = 'edit' | 'disable' | 'delete'
@@ -9,8 +10,9 @@ const menuItems: { id: MenuItemId; label: string; destructive?: boolean }[] = [
   { id: 'delete',  label: 'Delete', destructive: true },
 ]
 
-// 3 items × ~32px + 8px padding
 const MENU_HEIGHT = 112
+const MENU_WIDTH  = 140
+const GAP         = 4
 
 interface ApiKeyActionsMenuProps {
   onAction?: (action: MenuItemId) => void
@@ -19,18 +21,36 @@ interface ApiKeyActionsMenuProps {
 
 export function ApiKeyActionsMenu({ onAction, align = 'right' }: ApiKeyActionsMenuProps) {
   const [open, setOpen]           = useState(false)
+  const [menuStyle, setMenuStyle] = useState<React.CSSProperties>({})
   const [openUpward, setOpenUpward] = useState(true)
 
-  const containerRef = useRef<HTMLDivElement>(null)
-  const buttonRef    = useRef<HTMLButtonElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const menuRef   = useRef<HTMLDivElement>(null)
 
   const handleToggle = () => {
     if (!open && buttonRef.current) {
-      const { top, bottom } = buttonRef.current.getBoundingClientRect()
-      const spaceAbove = top
-      const spaceBelow = window.innerHeight - bottom
-      // open downward only when there's not enough room above
-      setOpenUpward(spaceAbove >= MENU_HEIGHT || spaceAbove >= spaceBelow)
+      const rect        = buttonRef.current.getBoundingClientRect()
+      const spaceAbove  = rect.top
+      const spaceBelow  = window.innerHeight - rect.bottom
+      const opensUpward = spaceAbove >= MENU_HEIGHT || spaceAbove >= spaceBelow
+
+      setOpenUpward(opensUpward)
+
+      const style: React.CSSProperties = { position: 'fixed', width: MENU_WIDTH }
+
+      if (align === 'right') {
+        style.right = window.innerWidth - rect.right
+      } else {
+        style.left = rect.left
+      }
+
+      if (opensUpward) {
+        style.bottom = window.innerHeight - rect.top + GAP
+      } else {
+        style.top = rect.bottom + GAP
+      }
+
+      setMenuStyle(style)
     }
     setOpen((v) => !v)
   }
@@ -38,7 +58,11 @@ export function ApiKeyActionsMenu({ onAction, align = 'right' }: ApiKeyActionsMe
   useEffect(() => {
     if (!open) return
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      const target = e.target as Node
+      if (
+        !buttonRef.current?.contains(target) &&
+        !menuRef.current?.contains(target)
+      ) {
         setOpen(false)
       }
     }
@@ -46,11 +70,45 @@ export function ApiKeyActionsMenu({ onAction, align = 'right' }: ApiKeyActionsMe
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [open])
 
-  const positionClass = openUpward ? 'bottom-full mb-1' : 'top-full mt-1'
-  const originClass   = openUpward ? 'origin-bottom-right' : 'origin-top-right'
+  const originClass = openUpward ? 'origin-bottom-right' : 'origin-top-right'
+
+  const menu = (
+    <div
+      ref={menuRef}
+      role="menu"
+      style={menuStyle}
+      className={[
+        'z-[9999] flex flex-col p-1',
+        'bg-[#262626] border border-white/10 rounded-xl',
+        'shadow-[0_4px_6px_rgba(0,0,0,0.15),0_2px_4px_rgba(0,0,0,0.1)]',
+        'animate-menu-in',
+        originClass,
+      ].join(' ')}
+    >
+      {menuItems.map((item) => (
+        <button
+          key={item.id}
+          role="menuitem"
+          onClick={() => {
+            setOpen(false)
+            onAction?.(item.id)
+          }}
+          className={[
+            'flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-sm text-left',
+            'transition-colors cursor-pointer',
+            item.destructive
+              ? 'text-[rgba(248,113,113,0.9)] hover:bg-white/5'
+              : 'text-[#fafafa] hover:bg-white/5',
+          ].join(' ')}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  )
 
   return (
-    <div ref={containerRef} className="relative flex items-center">
+    <div className="relative flex items-center">
       <button
         ref={buttonRef}
         aria-label="More options"
@@ -61,41 +119,7 @@ export function ApiKeyActionsMenu({ onAction, align = 'right' }: ApiKeyActionsMe
         <IconEllipsisVertical />
       </button>
 
-      {open && (
-        <div
-          role="menu"
-          className={[
-            'absolute z-50 w-[140px]',
-            positionClass,
-            align === 'right' ? 'right-0' : 'left-0',
-            'flex flex-col p-1',
-            'bg-[#262626] border border-white/10 rounded-xl',
-            'shadow-[0_4px_6px_rgba(0,0,0,0.15),0_2px_4px_rgba(0,0,0,0.1)]',
-            'animate-menu-in',
-            originClass,
-          ].join(' ')}
-        >
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              role="menuitem"
-              onClick={() => {
-                setOpen(false)
-                onAction?.(item.id)
-              }}
-              className={[
-                'flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-sm text-left',
-                'transition-colors cursor-pointer',
-                item.destructive
-                  ? 'text-[rgba(248,113,113,0.9)] hover:bg-white/5'
-                  : 'text-[#fafafa] hover:bg-white/5',
-              ].join(' ')}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-      )}
+      {open && createPortal(menu, document.body)}
     </div>
   )
 }
