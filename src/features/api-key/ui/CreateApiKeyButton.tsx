@@ -1,4 +1,4 @@
-import { IconPlus } from '../../../shared/ui/icons'
+import { IconPlus } from '@/shared/ui/icons'
 
 interface CreateApiKeyButtonProps {
   onClick?: () => void

@@ -8,7 +8,7 @@ import {
   IconWallet,
   IconSettings,
   IconDocs,
-} from '../../../shared/ui/icons'
+} from '@/shared/ui/icons'
 
 export interface NavItem {
   id: string

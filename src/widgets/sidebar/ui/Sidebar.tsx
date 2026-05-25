@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import logoUrl from '../../../assets/logo.svg'
-import { IconPanelLeft } from '../../../shared/ui/icons'
+import logoUrl from '@/assets/logo.svg'
+import { IconPanelLeft } from '@/shared/ui/icons'
 import { SidebarGroup } from './SidebarGroup'
 import { navGroups } from '../model/navConfig'
 
