@@ -4,6 +4,8 @@ import { CreateApiKeyButton, CreateApiKeyFab } from '@/features/api-key'
 import { ThinkingLoader } from '@/shared/ui/ThinkingLoader'
 import { DotGridLoader } from '@/shared/ui/DotGridLoader'
 
+const DOT_COLORS = ['#a855f7', '#eab308', '#06b6d4', '#ec4899', '#6b7280']
+
 export function ApiKeysPage() {
   return (
     <>
@@ -20,8 +22,12 @@ export function ApiKeysPage() {
             <CreateApiKeyButton />
           </div>
           <ApiKeyTable keys={mockApiKeys} />
-          <div className="flex items-center gap-4 pt-1">
-            <DotGridLoader color="#a855f7" />
+          <div className="flex items-start gap-4 pt-1">
+            <div className="flex flex-col gap-1">
+              {DOT_COLORS.map((color, i) => (
+                <DotGridLoader key={color} color={color} loop initialDelay={i * 400} />
+              ))}
+            </div>
             <ThinkingLoader />
           </div>
         </div>
@@ -32,8 +38,14 @@ export function ApiKeysPage() {
         {mockApiKeys.map((key) => (
           <ApiKeyCard key={key.id} apiKey={key} />
         ))}
-        <div className="flex items-center gap-3 pt-1">
-          <DotGridLoader color="#a855f7" />
+        <div className="flex items-start gap-3 pt-1">
+          <div className="flex flex-col gap-1">
+            <DotGridLoader color="#a855f7" loop />
+            <DotGridLoader color="#eab308" loop />
+            <DotGridLoader color="#06b6d4" loop />
+            <DotGridLoader color="#ec4899" loop />
+            <DotGridLoader color="#6b7280" loop />
+          </div>
           <ThinkingLoader />
         </div>
 

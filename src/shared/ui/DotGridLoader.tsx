@@ -1,12 +1,30 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
-const COLS       = 6
-const ROWS       = 3
-const STEP_MS    = 150
-const TOTAL_STEPS = 18
+const COLS           = 6
+const ROWS           = 3
+const STEP_MS        = 150
+const TOTAL_STEPS    = 18
+const APPEAR_STEP_MS = 60    // delay between each dot's appearance / disappearance
+const FADE_MS        = 150   // opacity transition duration per dot
+const PAUSE_MS       = 2000  // pause between loop iterations
+const LOOP_ANIM_MS   = 5000  // how long to animate per loop cycle
 
-// Horizontal wave: all rows in a column peak at the same step.
-// Middle row (1) has a wider peak zone (±1 step) than outer rows (exact step only).
+// After the last dot appears (step index 12) + fade + short pause
+const ANIM_DELAY_MS    = (COLS * 2 + 2) * APPEAR_STEP_MS + 300
+// Time for all dots to finish fading out
+const EXIT_COMPLETE_MS = (COLS * 2) * APPEAR_STEP_MS + FADE_MS + 50
+
+function appearStepIdx(row: number, col: number): number {
+  const rowOffset = row === 1 ? 0 : row === 0 ? 1 : 2
+  return col * 2 + rowOffset
+}
+
+function getDotDelay(row: number, col: number): number {
+  return appearStepIdx(row, col) * APPEAR_STEP_MS
+}
+
+// ─── wave animation ───────────────────────────────────────────────────────────
+
 function colCenter(col: number): number {
   return 6 + col
 }
@@ -15,21 +33,22 @@ type Level = 'inactive' | 'low' | 'mid' | 'high' | 'peak'
 
 function getLevel(step: number, row: number, col: number): Level {
   const diff = Math.abs(step - colCenter(col))
-
   if (row === 1) {
-    // Middle row: 3-step peak
     if (diff <= 1) return 'peak'
     if (diff === 2) return 'high'
     if (diff === 3) return 'mid'
     if (diff === 4) return 'low'
   } else {
-    // Top / bottom rows: 1-step peak
     if (diff === 0) return 'peak'
     if (diff === 1) return 'high'
     if (diff === 2) return 'mid'
     if (diff === 3) return 'low'
   }
   return 'inactive'
+}
+
+function isWaveOffScreen(step: number): boolean {
+  return step < 2 || step > 15
 }
 
 // ─── colour derivation ────────────────────────────────────────────────────────
@@ -62,27 +81,102 @@ function mkHsl(h: number, s: number, l: number) {
 function deriveColors(hex: string) {
   const [h, s, l] = hexToHsl(hex)
   return {
-    peak: mkHsl(h, Math.max(s - 12, 30), Math.min(l + 22, 92)),  // lightest
-    high: mkHsl(h, s, l),                                          // base colour
-    mid:  mkHsl(h, s, Math.max(l - 20, 5)),                       // darker
-    low:  mkHsl(h, Math.min(s + 5, 100), Math.max(l - 42, 3)),    // darkest
+    peak: mkHsl(h, Math.max(s - 12, 30), Math.min(l + 22, 92)),
+    high: mkHsl(h, s, l),
+    mid:  mkHsl(h, s, Math.max(l - 20, 5)),
+    low:  mkHsl(h, Math.min(s + 5, 100), Math.max(l - 42, 3)),
   }
 }
 
 // ─── component ────────────────────────────────────────────────────────────────
 
+type Phase = 'idle' | 'entering' | 'animating' | 'exitPending' | 'exiting'
+
 interface DotGridLoaderProps {
-  color?: string  // hex, e.g. "#a855f7"
+  color?:        string   // hex, e.g. "#a855f7"
+  isLoading?:    boolean  // false triggers exit; true restarts after exit
+  loop?:         boolean  // demo mode: automatically cycles indefinitely
+  // TODO: initialDelay prop used only for demonstration purposes, it should be removed
+  initialDelay?: number   // ms to wait before the very first appearance
 }
 
-export function DotGridLoader({ color = '#a855f7' }: DotGridLoaderProps) {
-  const [step, setStep] = useState(0)
+export function DotGridLoader({ color = '#a855f7', isLoading, loop = false, initialDelay = 0 }: DotGridLoaderProps) {
+  const [phase, setPhase]         = useState<Phase>('idle')
+  const [step, setStep]           = useState(0)
+  const [iteration, setIteration] = useState(0)
   const colors = useMemo(() => deriveColors(color), [color])
 
+  // Keep a ref so the iteration effect can read the current isLoading without it being a dep
+  const isLoadingRef = useRef(isLoading)
+  useLayoutEffect(() => { isLoadingRef.current = isLoading })
+
+  // Start / restart — driven by iteration counter
   useEffect(() => {
-    const id = setInterval(() => setStep(s => (s + 1) % TOTAL_STEPS), STEP_MS)
+    if (isLoadingRef.current === false) return  // don't start if explicitly not loading
+    let raf:       number | undefined
+    let animTimer: ReturnType<typeof setTimeout> | undefined
+    let loopTimer: ReturnType<typeof setTimeout> | undefined
+
+    const delayTimer = setTimeout(() => {
+      setPhase('idle')
+      setStep(0)
+      raf       = requestAnimationFrame(() => setPhase('entering'))
+      animTimer = setTimeout(() => setPhase('animating'), ANIM_DELAY_MS)
+      loopTimer = loop
+        ? setTimeout(() => setPhase('exitPending'), ANIM_DELAY_MS + LOOP_ANIM_MS)
+        : undefined
+    }, iteration === 0 ? initialDelay : 0)
+
+    return () => {
+      clearTimeout(delayTimer)
+      if (raf !== undefined)       cancelAnimationFrame(raf)
+      if (animTimer !== undefined) clearTimeout(animTimer)
+      if (loopTimer !== undefined) clearTimeout(loopTimer)
+    }
+  }, [iteration, loop, initialDelay])
+
+  // React to isLoading prop changes
+  const prevIsLoading = useRef<boolean | undefined>(undefined)
+  useEffect(() => {
+    const prev = prevIsLoading.current
+    prevIsLoading.current = isLoading
+
+    if (isLoading === false && prev !== false) {
+      // loading → not loading: trigger exit
+      setPhase(p =>
+        p === 'animating' || p === 'entering' ? 'exitPending' : p,
+      )
+    } else if (isLoading === true && prev === false) {
+      // not loading → loading: restart
+      setIteration(i => i + 1)
+    }
+  }, [isLoading])
+
+  // Wave interval — runs during animating and exitPending.
+  // exitPending→exiting transition is handled here (not in a separate effect)
+  // to avoid synchronous setState-inside-effect warning.
+  useEffect(() => {
+    if (phase !== 'animating' && phase !== 'exitPending') return
+    let s = step
+    const id = setInterval(() => {
+      s = (s + 1) % TOTAL_STEPS
+      setStep(s)
+      if (phase === 'exitPending' && isWaveOffScreen(s)) setPhase('exiting')
+    }, STEP_MS)
     return () => clearInterval(id)
-  }, [])
+  // step intentionally excluded — interval is the sole writer of step
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase])
+
+  // After dots disappear: loop restarts after pause
+  useEffect(() => {
+    if (phase !== 'exiting' || !loop) return
+    const timer = setTimeout(
+      () => setIteration(i => i + 1),
+      EXIT_COMPLETE_MS + PAUSE_MS,
+    )
+    return () => clearTimeout(timer)
+  }, [phase, loop])
 
   return (
     <div
@@ -95,10 +189,16 @@ export function DotGridLoader({ color = '#a855f7' }: DotGridLoaderProps) {
       }}
     >
       {Array.from({ length: ROWS * COLS }, (_, i) => {
-        const row  = Math.floor(i / COLS)
-        const col  = i % COLS
-        const level = getLevel(step, row, col)
+        const row   = Math.floor(i / COLS)
+        const col   = i % COLS
+        const isWaving = phase === 'animating' || phase === 'exitPending'
+        const level    = isWaving ? getLevel(step, row, col) : 'inactive'
         const isActive = level !== 'inactive'
+
+        const opacity      = (phase === 'idle' || phase === 'exiting') ? 0 : 1
+        const opacityDelay = (phase === 'entering' || phase === 'exiting')
+          ? getDotDelay(row, col)
+          : 0
 
         const bg          = isActive ? colors[level] : 'rgba(255,255,255,0.06)'
         const borderWidth = level === 'peak' ? '1px' : '0.5px'
@@ -117,10 +217,16 @@ export function DotGridLoader({ color = '#a855f7' }: DotGridLoaderProps) {
               flexShrink: 0,
               boxSizing: 'border-box',
               backdropFilter: 'blur(3px)',
+              opacity,
               background: bg,
               border: `${borderWidth} solid ${borderColor}`,
               boxShadow,
-              transition: 'background-color 120ms ease, box-shadow 120ms ease, border-color 120ms ease',
+              transition: [
+                `opacity ${FADE_MS}ms ease ${opacityDelay}ms`,
+                'background-color 120ms ease',
+                'box-shadow 120ms ease',
+                'border-color 120ms ease',
+              ].join(', '),
             }}
           />
         )
