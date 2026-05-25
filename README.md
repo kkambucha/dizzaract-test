@@ -7,7 +7,7 @@ yarn install
 yarn dev
 ```
 
-Dev site will be available on `http://localhost:5173/`
+Dev site will be available on [http://localhost:5173/](http://localhost:5173/)
 
 ---
 
