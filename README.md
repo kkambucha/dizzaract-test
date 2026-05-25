@@ -11,6 +11,11 @@ Dev site will be available on `http://localhost:5173/`
 
 ---
 
+### What next?
+- replace the favicon by correct one
+- add i18n and replace all text by locales
+- implement ApiKeyActionsMenu by another way with some popup-popover module and use this way for other tooltips in the project
+
 ## API Keys — backend requirements
 
 ### Endpoints
