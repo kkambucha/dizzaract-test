@@ -24,8 +24,8 @@ export function ApiKeyTable({ keys }: ApiKeyTableProps) {
       </div>
 
       {/* Rows */}
-      {keys.map((key, i) => (
-        <ApiKeyRow key={key.id} apiKey={key} isLast={i === keys.length - 1} />
+      {keys.map((key) => (
+        <ApiKeyRow key={key.id} apiKey={key} />
       ))}
     </div>
   )

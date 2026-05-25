@@ -1,8 +1,8 @@
-import { Sidebar } from './widgets/sidebar'
-import { Header } from './widgets/header'
-import { MobileHeader } from './widgets/mobile-header'
-import { BottomNav } from './widgets/bottom-nav'
-import { ApiKeysPage } from './pages/api-keys'
+import { Sidebar } from '@/widgets/sidebar'
+import { Header } from '@/widgets/header'
+import { MobileHeader } from '@/widgets/mobile-header'
+import { BottomNav } from '@/widgets/bottom-nav'
+import { ApiKeysPage } from '@/pages/api-keys'
 
 export default function App() {
   return (
@@ -28,17 +28,7 @@ export default function App() {
 
         {/* Scrollable content */}
         <main className="flex-1 overflow-y-auto">
-          {/* Desktop: centred with padding */}
-          <div className="hidden md:flex justify-center p-4">
-            <div className="w-full max-w-[1280px] p-4">
-              <ApiKeysPage />
-            </div>
-          </div>
-
-          {/* Mobile: full-width with padding */}
-          <div className="flex md:hidden p-4">
-            <ApiKeysPage />
-          </div>
+          <ApiKeysPage />
         </main>
 
         {/* Bottom nav — mobile only */}

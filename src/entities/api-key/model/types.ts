@@ -5,7 +5,7 @@ export interface ApiKey {
   name: string
   maskedKey: string
   status: ApiKeyStatus
-  expires: string
-  created: string
-  lastUsed: string
+  expiresAt: string
+  createdAt: string
+  lastUsedAt: string
 }

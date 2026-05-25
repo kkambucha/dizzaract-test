@@ -1,4 +1,5 @@
 import { ApiKeyActionsMenu } from './ApiKeyActionsMenu'
+import { StatusBadge } from './StatusBadge'
 import { getMobileSummary } from '../model/helpers'
 import type { ApiKey } from '../model/types'
 
@@ -31,11 +32,7 @@ export function ApiKeyCard({ apiKey }: ApiKeyCardProps) {
       </div>
 
       {/* Expired badge */}
-      {isExpired && (
-        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-xl text-xs font-semibold text-white bg-[rgba(248,113,113,0.6)] shrink-0 whitespace-nowrap">
-          Expired
-        </span>
-      )}
+      {isExpired && <StatusBadge status="Expired" />}
 
       {/* Actions menu */}
       <div className="flex items-center p-1 shrink-0">

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 const COLS       = 6
 const ROWS       = 3
 const STEP_MS    = 150
-const TOTAL_STEPS = 22
+const TOTAL_STEPS = 18
 
 // Horizontal wave: all rows in a column peak at the same step.
 // Middle row (1) has a wider peak zone (±1 step) than outer rows (exact step only).

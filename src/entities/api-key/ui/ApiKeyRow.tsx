@@ -4,26 +4,22 @@ import type { ApiKey } from '../model/types'
 
 interface ApiKeyRowProps {
   apiKey: ApiKey
-  isLast: boolean
 }
 
 const cellBase = 'flex flex-1 min-w-[85px] h-[52px] items-center px-2 text-sm text-[#fafafa] overflow-hidden text-ellipsis whitespace-nowrap'
-const borderBottom = 'border-b border-white/10'
 
-export function ApiKeyRow({ apiKey, isLast }: ApiKeyRowProps) {
-  const border = isLast ? '' : borderBottom
-
+export function ApiKeyRow({ apiKey }: ApiKeyRowProps) {
   return (
-    <div className="flex items-center w-full">
-      <div className={`${cellBase} ${border} pl-3`}>{apiKey.name}</div>
-      <div className={`${cellBase} ${border}`}>{apiKey.maskedKey}</div>
-      <div className={`${cellBase} ${border}`}>
+    <div className="flex items-center w-full border-b border-white/10 last:border-b-0">
+      <div className={`${cellBase} pl-3`}>{apiKey.name}</div>
+      <div className={cellBase}>{apiKey.maskedKey}</div>
+      <div className={cellBase}>
         <StatusBadge status={apiKey.status} />
       </div>
-      <div className={`${cellBase} ${border}`}>{apiKey.expires}</div>
-      <div className={`${cellBase} ${border}`}>{apiKey.created}</div>
-      <div className={`${cellBase} ${border}`}>{apiKey.lastUsed}</div>
-      <div className={`flex shrink-0 w-[85px] h-[52px] items-center justify-end px-2 ${border}`}>
+      <div className={cellBase}>{apiKey.expiresAt}</div>
+      <div className={cellBase}>{apiKey.createdAt}</div>
+      <div className={cellBase}>{apiKey.lastUsedAt}</div>
+      <div className="flex shrink-0 w-[85px] h-[52px] items-center justify-end px-2">
         <ApiKeyActionsMenu align="right" />
       </div>
     </div>

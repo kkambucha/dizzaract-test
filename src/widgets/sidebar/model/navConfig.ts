@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import {
   IconLayers,
   IconKey,
@@ -12,7 +13,7 @@ import {
 export interface NavItem {
   id: string
   label: string
-  icon: React.ReactNode
+  icon: ComponentType
   active?: boolean
 }
 
@@ -29,18 +30,18 @@ export const navGroups: NavGroup[] = [
     label: 'Platform',
     dimLabel: true,
     items: [
-      { id: 'models',     label: 'Models',     icon: <IconLayers /> },
-      { id: 'api-keys',   label: 'API keys',   icon: <IconKey />, active: true },
-      { id: 'usage',      label: 'Usage',      icon: <IconStats /> },
-      { id: 'billing',    label: 'Billing',    icon: <IconCard /> },
-      { id: 'playground', label: 'Playground', icon: <IconGamepad /> },
+      { id: 'models',     label: 'Models',     icon: IconLayers },
+      { id: 'api-keys',   label: 'API keys',   icon: IconKey, active: true },
+      { id: 'usage',      label: 'Usage',      icon: IconStats },
+      { id: 'billing',    label: 'Billing',    icon: IconCard },
+      { id: 'playground', label: 'Playground', icon: IconGamepad },
     ],
   },
   {
     id: 'node',
     label: 'Node',
     items: [
-      { id: 'node-rewards', label: 'Node rewards', icon: <IconWallet /> },
+      { id: 'node-rewards', label: 'Node rewards', icon: IconWallet },
     ],
   },
   {
@@ -48,8 +49,8 @@ export const navGroups: NavGroup[] = [
     label: 'System',
     dimLabel: true,
     items: [
-      { id: 'settings', label: 'Settings', icon: <IconSettings /> },
-      { id: 'docs',     label: 'Docs',     icon: <IconDocs /> },
+      { id: 'settings', label: 'Settings', icon: IconSettings },
+      { id: 'docs',     label: 'Docs',     icon: IconDocs },
     ],
   },
 ]

@@ -1,4 +1,4 @@
-import { cn } from '../../../shared/lib/cn'
+import { cn } from '@/shared/lib/cn'
 import type { NavItem } from '../model/navConfig'
 
 interface SidebarItemProps {
@@ -8,10 +8,12 @@ interface SidebarItemProps {
 }
 
 export function SidebarItem({ item, collapsed, onClick }: SidebarItemProps) {
+  const Icon = item.icon
   return (
     <li>
       <button
         title={collapsed ? item.label : undefined}
+        aria-current={item.active ? 'page' : undefined}
         onClick={() => onClick?.(item.id)}
         className={cn(
           'flex items-center w-full h-9 rounded-xl text-sm text-[#fafafa] transition-colors cursor-pointer',
@@ -20,7 +22,7 @@ export function SidebarItem({ item, collapsed, onClick }: SidebarItemProps) {
         )}
       >
         <span className="flex shrink-0 w-4 h-4 items-center justify-center">
-          {item.icon}
+          <Icon />
         </span>
         {!collapsed && <span className="truncate">{item.label}</span>}
       </button>
