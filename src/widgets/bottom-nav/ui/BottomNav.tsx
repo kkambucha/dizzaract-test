@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ComponentType, SVGProps } from 'react'
 import cn from 'classnames'
 import {
   IconLayers,
@@ -11,7 +11,7 @@ import {
 interface NavTab {
   id: string
   label: string
-  icon: ComponentType<JSX.IntrinsicElements['svg']>
+  icon: ComponentType<SVGProps<SVGSVGElement>>
   active?: boolean
   badge?: number
 }

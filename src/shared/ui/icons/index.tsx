@@ -1,4 +1,6 @@
-type IconProps = JSX.IntrinsicElements['svg']
+import type { SVGProps } from 'react'
+
+type IconProps = SVGProps<SVGSVGElement>
 
 export function IconPanelLeft(props: IconProps) {
   return (

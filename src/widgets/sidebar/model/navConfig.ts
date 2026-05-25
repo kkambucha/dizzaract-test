@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ComponentType, SVGProps } from 'react'
 import {
   IconLayers,
   IconKey,
@@ -13,7 +13,7 @@ import {
 export interface NavItem {
   id: string
   label: string
-  icon: ComponentType<JSX.IntrinsicElements['svg']>
+  icon: ComponentType<SVGProps<SVGSVGElement>>
   active?: boolean
 }
 
